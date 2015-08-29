@@ -1,7 +1,7 @@
-PREFIX=mipsel-unknown-elf-
+PREFIX=mips-linux-gnu-
 AS=$(PREFIX)as -mips32
 CC=$(PREFIX)gcc
-LD=$(PREFIX)ld
+LD=$(PREFIX)ld -EL
 AR=$(PREFIX)ar
 OBJCOPY=$(PREFIX)objcopy
 CFLAGS=-mips32r2 -EL -O2 -std=c99 -Wall -Werror -Iinclude -G0
@@ -37,7 +37,7 @@ STAGE1_SRC=stage1/stage1.S stage1/main.c stage1/ci20board.c stage1/memtest.c
 build/stage1/ddr.o: build/stage1/ddr.c
 
 build/stage1/ddr.c: stage1/ddr.py
-	python3 stage1/ddr.py >build/stage1/ddr.c
+	python stage1/ddr.py >build/stage1/ddr.c
 
 build/stage1.elf: $(call obj,$(STAGE1_SRC)) build/stage1/ddr.o stage1/stage1.lds build/libci20mini.a
 	$(LD) -T stage1/stage1.lds -o $@ $(call obj,$(STAGE1_SRC)) build/stage1/ddr.o build/libci20mini.a
@@ -62,12 +62,12 @@ build/%.o: %.[Sc] $$(@D)/.f
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 %/.f:
-	mkdir -p $(dir $@) 
-	touch $@
+	md $(subst /,\\,$(dir $@))
+#	touch $@
 
 .PRECIOUS: %/.f
 
 
 clean:
-	rm -rf build
+	rd build /s /q
 

@@ -6,7 +6,7 @@ from collections import namedtuple
 import usb.core
 import usb.util
 
-from thirdparty.pyelftools.elftools.elf import elffile
+from elftools.elf import elffile
 
 IDVENDOR  = 0xA108
 IDPRODUCT = 0x4780
